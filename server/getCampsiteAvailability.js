@@ -25,6 +25,17 @@ const pushIfUnique = (arr, newItem) => {
   return Array.from(new Set([...arr, newItem]));
 }
 
+const objectFilter = (obj, filterFn) => {
+  const entries = Object.entries(obj);
+  const filteredObject = entries.reduce((newObj, entry) => {
+    if (filterFn(entry[1])) {
+      newObj[entry[0]] = entry[1];
+    }
+    return newObj;
+  }, {});
+  return filteredObject;
+};
+
 const sortObjectKeys = obj => {
   const sortedEntries = Object.entries(obj).sort((a, b) =>{
     console.log("a[0]", a[0])
@@ -96,17 +107,14 @@ const checkParkAvailability = async (
   let endDate = new Date(startingDate);
   endDate.setDate(startDate.getDate() + numNights);
   while (endDate.getTime() <= finalDatestamp) {
-    console.log("startDate:", getDateString(startDate));
-    console.log("endDate:", getDateString(endDate));
     const response = await apiRequest(facilityId, startDate, endDate);
     if (response) {
       const units = response.Facility.Units;
       for (const key in units) {
         const unit = units[key];
-        // if (!targetUnits.includes(unit.ShortName)) {
-        //   console.log(`unit ${unit.ShortName} not in target units, skipping`);
-        //   continue;
-        // }
+        if (!targetUnits.includes(unit.ShortName)) {
+          continue;
+        }
         const slices = objectFilter(unit.Slices, slice => slice.IsFree);
         for (const sliceKey in slices) {
           const slice = slices[sliceKey];
@@ -117,7 +125,6 @@ const checkParkAvailability = async (
           }
         }
         if (Object.keys(slices).length) {
-          console.log(`include unit ${unit.ShortName} in map`);
           if (!(unit.ShortName in unitMap)) {
             unitMap[unit.ShortName] = slices;
           } else {
@@ -129,34 +136,24 @@ const checkParkAvailability = async (
         }
       }
     }
-
-    // startDate.setDate(startDate.getDate() + 1);
     startDate = new Date(endDate.getTime());
     endDate = new Date(startDate.getTime());
     endDate.setDate(startDate.getDate() + numNights);
     await wait(REQUEST_TIMEOUT);
   }
-  console.log("unitMap:", unitMap);
-  console.log("dateMap:", dateMap);
   const sortedDates = sortObjectKeys(dateMap);
-  console.log("sortedDates:", sortedDates);
   return sortedDates;
 };
 
-const objectFilter = (obj, filterFn) => {
-  const entries = Object.entries(obj);
-  const filteredObject = entries.reduce((newObj, entry) => {
-    if (filterFn(entry[1])) {
-      newObj[entry[0]] = entry[1];
-    }
-    return newObj;
-  }, {});
-  return filteredObject;
-};
+export const runErinsCheck = () => {
+  return checkParkAvailability(
+    CRYSTAL_COVE_FACILITY_ID,
+    getDateString(new Date()),
+    TARGET_UNITS,
+    7
+  );
+}
 
-checkParkAvailability(
-  CRYSTAL_COVE_FACILITY_ID,
-  getDateString(new Date()),
-  TARGET_UNITS,
-  7
-);
+
+
+export default checkParkAvailability;
