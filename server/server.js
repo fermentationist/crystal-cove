@@ -33,6 +33,6 @@ setInterval(() => {
       )
     )
     .catch((error) => console.log(`Error fetching https://crystal-cove.onrender.com: ${error.message}`));
-}, 1000 * 60 * 14.95);
+}, 1000 * 60 * 14);
 
 export default app;
