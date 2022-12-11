@@ -40,27 +40,30 @@ function App() {
           <>
 
             <Button onClick={() => window.location.reload()}>RELOAD</Button>
-            <Table>
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Units available</th>
-                </tr>
-              </thead>
-              <tbody>
-                {
-                  tableData.map(entry => {
-                    return (
-                      <tr>
-                        <td>{entry[0]}</td>
-                        <td>{entry[1].join(", ")}</td>
-                      </tr>
-                    )
-                  })
-                }
-              </tbody>
-
-            </Table>
+            {
+              tableData.length ? (
+                <Table>
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Units available</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {
+                      tableData.map(entry => {
+                        return (
+                          <tr>
+                            <td>{entry[0]}</td>
+                            <td>{entry[1].join(", ")}</td>
+                          </tr>
+                        )
+                      })
+                    }
+                  </tbody>
+                </Table>
+              ) : null
+            }
           </>
         )
       }

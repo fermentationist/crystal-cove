@@ -1,8 +1,6 @@
-// const API_URL = "https://calirdr.usedirect.com/rdr/rdr/";
 import axios  from "axios";
 
 const DATE_GRID_API = "https://calirdr.usedirect.com/RDR/rdr/search/grid";
-const CRYSTAL_COVE_PLACE_ID = 634;
 const CRYSTAL_COVE_FACILITY_ID = "757";
 // const CRYSTAL_COVE_FACILITY_ID = "447"; // Campground with better availability for testing
 const REQUEST_TIMEOUT = 100;
@@ -38,7 +36,6 @@ const objectFilter = (obj, filterFn) => {
 
 const sortObjectKeys = obj => {
   const sortedEntries = Object.entries(obj).sort((a, b) =>{
-    console.log("a[0]", a[0])
     if (a[0] > b[0]) {
       return 1;
     }
@@ -98,14 +95,14 @@ const checkParkAvailability = async (
   targetUnits,
   numNights
 ) => {
-  const unitMap = {};
   const dateMap = {};
   let startDate = new Date(startingDate);
+  let endDate = new Date(startingDate);
+  endDate.setDate(endDate.getDate() + numNights);
   const finalDate = new Date();
   finalDate.setMonth(startDate.getMonth() + 6);
   const finalDatestamp = finalDate.getTime();
-  let endDate = new Date(startingDate);
-  endDate.setDate(startDate.getDate() + numNights);
+
   while (endDate.getTime() <= finalDatestamp) {
     const response = await apiRequest(facilityId, startDate, endDate);
     if (response) {
@@ -122,16 +119,6 @@ const checkParkAvailability = async (
             dateMap[slice.Date] = [unit.ShortName]
           } else {
             dateMap[slice.Date] = pushIfUnique(dateMap[slice.Date], unit.ShortName);
-          }
-        }
-        if (Object.keys(slices).length) {
-          if (!(unit.ShortName in unitMap)) {
-            unitMap[unit.ShortName] = slices;
-          } else {
-            unitMap[unit.ShortName] = Object.assign(
-              unitMap[unit.ShortName],
-              slices
-            );
           }
         }
       }
