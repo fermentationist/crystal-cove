@@ -24,4 +24,15 @@ app.listen(API_SERVER_PORT, () => {
   console.log(`Express app listening on port ${API_SERVER_PORT}`);
 });
 
+setInterval(() => {
+  // keep server awake
+  fetch("https://crystal-cove.onrender.com")
+    .then(() =>
+      console.log(
+        `Fetching https://crystal-cove.onrender.com. Server is woke.`
+      )
+    )
+    .catch((error) => console.log(`Error fetching https://crystal-cove.onrender.com: ${error.message}`));
+}, 1000 * 60 * 14.95);
+
 export default app;
