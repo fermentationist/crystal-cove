@@ -8,7 +8,7 @@
     "dev": "concurrently \"npm run client\" \"node server/server.js\"",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "PROD_MODE=true\nexport PROD_MODE\nnpm run build\nnode server/server.js"
+    "start": "PROD_MODE=true\nexport PROD_MODE\nnode server/server.js"
   },
   "dependencies": {
     "axios": "^1.2.1",
