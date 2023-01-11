@@ -21,7 +21,7 @@
     "react-is": "^18.2.0",
     "styled-components": "^5.3.6",
     "vite": "^4.0.0",
-    "woke-dyno": "^0.0.4"
+    "woke-dyno": "^1.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.26",
